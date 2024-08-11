@@ -1,25 +1,38 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Cart from './components/Cart';
+import Checkout from './components/Checkout';
+import Header from './components/header';
+import ProductList from './components/ProductList';
 
-function App() {
+const App = () => {
+  const [cartItems, setCartItems] = useState([]);
+  
+  const products = [
+    { id: 1, name: 'Product 1', price: 50, image: '/images/product1.jpg' },
+    { id: 2, name: 'Product 2', price: 75, image: '/images/product2.jpg' },
+    { id: 3, name: 'Product 3', price: 100, image: '/images/product3.jpg' },
+  ];
+
+  const addToCart = (product) => {
+    setCartItems([...cartItems, product]);
+  };
+
+  const removeFromCart = (product) => {
+    setCartItems(cartItems.filter(item => item.id !== product.id));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Header cartCount={cartItems.length} />
+      <Routes>
+        <Route path="/" element={<ProductList products={products} addToCart={addToCart} />} />
+        <Route path="/cart" element={<Cart cartItems={cartItems} removeFromCart={removeFromCart} />} />
+        <Route path="/checkout" element={<Checkout />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
